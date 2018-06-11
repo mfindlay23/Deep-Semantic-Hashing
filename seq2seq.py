@@ -3,6 +3,10 @@ from keras.layers import Input, LSTM, Dense
 import numpy as np
 from keras import backend as K
 import sys
+import utils
+import word2vec
+import gensim
+import word2vec
 
 def get_session(gpu_num="2", gpu_fraction=0.2):
     import tensorflow as tf
@@ -90,7 +94,10 @@ class seq2seq(object):
 
 
 if __name__ == "__main__":
+
     K.set_session(get_session())
+    data_path = '20news-bydate-train'
+    utils.DataUtils.get_20news_dataset(data_path)
 
     batch_size = 64  # Batch size for training.
     epochs = 100  # Number of epochs to train for.
@@ -104,21 +111,26 @@ if __name__ == "__main__":
     target_texts = []
     input_characters = set()
     target_characters = set()
-    with open(data_path, 'r', encoding='utf-8') as f:
-        lines = f.read().split('\n')
-    for line in lines[: min(num_samples, len(lines) - 1)]:
-        input_text, target_text = line.split('\t')
-        # We use "tab" as the "start sequence" character
-        # for the targets, and "\n" as "end sequence" character.
-        target_text = '\t' + target_text + '\n'
-        input_texts.append(input_text)
-        target_texts.append(target_text)
-        for char in input_text:
-            if char not in input_characters:
-                input_characters.add(char)
-        for char in target_text:
-            if char not in target_characters:
-                target_characters.add(char)
+
+    for doc in utils.DataUtils.X_train[:1000]:
+        for words in doc:
+            try:
+                w = words.decode('utf-8')
+                input_text = w
+                target_text = w
+                # We use "tab" as the "start sequence" character
+                # for the targets, and "\n" as "end sequence" character.
+                target_text = '\t' + target_text + '\n'
+                input_texts.append(input_text)
+                target_texts.append(target_text)
+                for char in input_text:
+                    if char not in input_characters:
+                        input_characters.add(char)
+                for char in target_text:
+                    if char not in target_characters:
+                        target_characters.add(char)
+            except UnicodeDecodeError:
+                pass
 
     input_characters = sorted(list(input_characters))
     target_characters = sorted(list(target_characters))

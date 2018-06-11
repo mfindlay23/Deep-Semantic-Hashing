@@ -1,0 +1,1 @@
+'Mean average precision of RNN hasher: ', 0.17564381270903009

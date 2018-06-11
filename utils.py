@@ -7,6 +7,12 @@ def hash(states):
     state_string = states.flatten()
     return [1 if i >0 else 0 for i in state_string]
 
+def map(file_path):
+    with open(file_path, "r") as f:
+        for line in f.readlines():
+            pass
+
+
 class DataUtils(object):
     #X train contains vector of words representations
     #Y train contains labels
@@ -36,9 +42,12 @@ class DataUtils(object):
                             DataUtils.Y_train.append(dname.split("/")[1])
                     except FileNotFoundError:
                         print ("Did not find file: ", fname)
-
         DataUtils.X_train = np.array(DataUtils.X_train)
         DataUtils.Y_train = np.array(DataUtils.Y_train)
+
+        from sklearn.utils import shuffle
+        DataUtils.X_train, DataUtils.Y_train = shuffle(DataUtils.X_train, DataUtils.Y_train, random_state=42)
+
         DataUtils.files = np.array(DataUtils.files)
 
     @staticmethod

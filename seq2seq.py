@@ -113,8 +113,8 @@ if __name__ == "__main__":
     seq_model.train(encoder_input_data, decoder_input_data, decoder_target_data)
 
     #enc_test, _, _, _, _= utils.DataUtils.prep_train_data(1000, 1100)
-    with open("hash_values.txt", "w") as f:
-        for seq_index in range(100):
+    with open("hash_values_random.txt", "w") as f:
+        for seq_index in range(1000):
             input_seq = encoder_input_data[seq_index: seq_index + 1]
             states_value = np.array(seq_model.hash(input_seq))
             hash_code = utils.hash(states_value)

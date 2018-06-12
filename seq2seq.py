@@ -67,7 +67,7 @@ class seq2seq(object):
         decoder_inputs = Input(shape=(None, self.num_decoder_tokens))
         decoder_lstm = LSTM(self.latent_dim, return_sequences=True, return_state=True)
         decoder_outputs, _, _ = decoder_lstm(decoder_inputs, initial_state=encoder_states)
-        decoder_dense = Dense(num_decoder_tokens, activation='softmax')
+        decoder_dense = Dense(self.num_decoder_tokens, activation='softmax')
         decoder_outputs = decoder_dense(decoder_outputs)
 
         self.hashing_inputs = encoder_inputs
@@ -76,6 +76,10 @@ class seq2seq(object):
 
     def _build_hashing_function(self):
         self.hashing_model = Model(self.hashing_inputs, self.hashing_states)
+
+    def load_existing(self, weight_path="s2s_training_weights.h5"):
+        self._build_training()
+        self.training_model.load_weights(weight_path)
 
     def train(self, encoder_input_data, decoder_input_data, decoder_target_data,
                 optimizer="rmsprop", loss='categorical_crossentropy', batch_size=100, epochs=10, validation_split=0.2):
@@ -104,7 +108,6 @@ if __name__ == "__main__":
     latent_dim = 256  # Latent dimensionality of the encoding space.
     num_samples = 10000  # Number of samples to train on.
     # Path to the data txt file on disk.
-    data_path = 'fra-eng/fra.txt'
 
     # Vectorize the data.
 

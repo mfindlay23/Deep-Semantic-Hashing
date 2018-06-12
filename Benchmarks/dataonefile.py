@@ -1,13 +1,23 @@
 import os
 
-path = "c:\\python25"
+path = '/mnt/c/Users/Kevin/Desktop/Deep-Semantic-Hashing/20news-bydate-train'
 
-i = 0
-for (path, dirs, files) in os.walk(pp, followlinks=True):
-    print(path)
-    print(dirs)
-    print(files)
-    print("----")
-    i += 1
-    if i >= 4:
-        break
+total_files = 0
+file_output = open('20news.data', 'w')
+
+for (dirpath, dirnames, filenames) in os.walk(path):
+    total_files = len(filenames)
+
+    for filename in filenames:
+        if filename == '.DS_Store':
+            continue
+
+        filedir = os.path.join(dirpath, filename)
+        category = filedir.split('/')[-2]
+
+        with open(filedir, 'r') as content_file:
+            content = content_file.read()
+            file_output.write(category + ', ' + repr(content))
+            file_output.write('\n')
+
+print 'Converted ' + str(total_files) + ' documents into single file \'20news.data\''
